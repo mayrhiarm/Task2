@@ -73,35 +73,25 @@ def put(id):
     data = request.get_json('name')
     name = data.get('name')
     username = data.get('username')
-    try:
-        user = db.session.execute(db.select(TaskTwo).filter_by(id=id)).scalar_one()
-    except NoResultFound:
-        if checker(name):
+    if type(name)!= int:
+        try:
+            user = db.session.execute(db.select(TaskTwo).filter_by(id=id)).scalar_one()
             if username:
                 username = username
             else:
                 username = user.username
-            user.name = name
-            user.username = username
-            user.username = user.username
-            db.session.commit()
-            updated = db.session.execute(db.select(TaskTwo).filter_by(id=id)).scalar()
-            return jsonify(response='User update', id=updated.id, name=updated.name, username=updated.username,
-                           status_code=201), 201
-        return jsonify(response=f'user with id = {id} not found', status_code=404), 404
+                user.name = name
+                user.username = username
+                user.username = user.username
+                db.session.commit()
+                updated = db.session.execute(db.select(TaskTwo).filter_by(id=id)).scalar()
+                return jsonify(response='User update', id=updated.id, name=updated.name, username=updated.username,
+                            status_code=201), 201
+        except NoResultFound:
+            return jsonify(response=f'user with id = {id} not found', status_code=404), 404
     else:
-        if checker(name):
-            if username:
-                username = username
-            else:
-                username = user.username
-            user.name = name
-            user.username = username
-            user.username = user.username
-            db.session.commit()
-            updated = db.session.execute(db.select(TaskTwo).filter_by(id=id)).scalar()
-            return jsonify(response='User update', id=updated.id, name=updated.name, username=updated.username,
-                           status_code=201), 201
+                return jsonify(response=f'{name} contains an integer, not allowed', status_code=400), 400
+        
 
 
 @app.route('/api/<int:id>', methods=['DELETE'])
