@@ -56,7 +56,7 @@ def create():
     data = request.get_json('name')
     name = data.get('name')
     random_int = randint(1, 1001)
-    if type(name)== int:
+    if type(name)!= int:
         username = f'{name}{random_int}'
         user = TaskTwo(name=name, username=username)
         db.session.add(user)
